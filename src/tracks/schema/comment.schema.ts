@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Track } from './track.schema';
 
 export type CommentDocument = HydratedDocument<Comment>;
@@ -12,7 +12,7 @@ export class Comment {
   @Prop()
   text: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  @Prop({ type: Types.ObjectId })
   trackId: Track;
 }
 
