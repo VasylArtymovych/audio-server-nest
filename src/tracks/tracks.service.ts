@@ -14,15 +14,17 @@ export class TracksService {
   ) {}
 
   async create(dto, picture, audio): Promise<Track> {
-    const picturePath = this.fileService.uploadFile(FileType.PICTURE, picture);
-    const audioPath = this.fileService.uploadFile(FileType.AUDIO, audio);
+    const picturePath = await this.fileService.uploadFile(
+      FileType.PICTURE,
+      picture,
+    );
+    const audioPath = await this.fileService.uploadFile(FileType.AUDIO, audio);
     const track = await this.trackModel.create({
       ...dto,
       listeners: 0,
       picture: picturePath,
       audio: audioPath,
     });
-
     return track;
   }
 
@@ -40,8 +42,31 @@ export class TracksService {
     return track;
   }
 
-  async update(id, dto): Promise<Track> {
-    const updatedTrack = this.trackModel.findByIdAndUpdate(
+  async searchByName(query): Promise<Array<Track>> {
+    const tracks = await this.trackModel.find({
+      name: { $regex: new RegExp(query, 'i') },
+      // name: { $regex: new RegExp(query), $options: 'i' },
+    });
+    return tracks;
+  }
+
+  async update(id, dto, files): Promise<Track> {
+    const { picture, audio } = files;
+    if (picture) {
+      const picturePath = await this.fileService.uploadFile(
+        FileType.PICTURE,
+        picture[0],
+      );
+      dto.picture = picturePath;
+    }
+    if (audio) {
+      const audioPath = await this.fileService.uploadFile(
+        FileType.AUDIO,
+        audio[0],
+      );
+      dto.audio = audioPath;
+    }
+    const updatedTrack = await this.trackModel.findByIdAndUpdate(
       id,
       { ...dto },
       { new: true },
@@ -51,7 +76,23 @@ export class TracksService {
 
   async delete(id) {
     const deletedTrack = await this.trackModel.findByIdAndDelete(id);
-    console.log(deletedTrack);
+    await this.fileService.deleteFile(deletedTrack.picture, deletedTrack.audio);
     return { message: 'success' };
+  }
+
+  async addComment(dto): Promise<Comment> {
+    const comment = await this.commentModel.create({ ...dto });
+    await this.trackModel.updateOne(
+      { _id: dto.trackId },
+      { $push: { comments: comment._id } },
+    );
+    return comment;
+  }
+
+  async listen(id): Promise<{ listeners: number }> {
+    const track = await this.trackModel.findById(id);
+    track.listeners += 1;
+    await track.save();
+    return { listeners: track.listeners };
   }
 }

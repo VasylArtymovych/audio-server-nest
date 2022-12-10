@@ -15,7 +15,9 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { TracksService } from './tracks.service';
+import { ObjectId } from 'mongoose';
 
 @Controller('tracks')
 export class TracksController {
@@ -41,12 +43,17 @@ export class TracksController {
     return this.trackService.getAll(limit, page);
   }
 
-  @Get(':id')
-  getOne(@Param('id') id: string) {
+  @Get('/search')
+  searchByName(@Query('query') query: string) {
+    return this.trackService.searchByName(query);
+  }
+
+  @Get('/:id')
+  getOne(@Param('id') id: ObjectId) {
     return this.trackService.getOne(id);
   }
 
-  @Patch(':id')
+  @Patch('/:id')
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'picture', maxCount: 1 },
@@ -54,17 +61,25 @@ export class TracksController {
     ]),
   )
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @UploadedFiles() files,
     @Body() dto: UpdateTrackDto,
   ) {
-    const { picture, audio } = files;
-    console.log('files', files, picture);
-    return this.trackService.update(id, dto);
+    return this.trackService.update(id, dto, files);
   }
 
-  @Delete(':id')
-  delete(@Param('id') id) {
+  @Delete('/:id')
+  delete(@Param('id') id: ObjectId) {
     return this.trackService.delete(id);
+  }
+
+  @Post('/comment')
+  addComment(@Body() dto: CreateCommentDto) {
+    return this.trackService.addComment(dto);
+  }
+
+  @Post('/listen/:id')
+  listen(@Param('id') id: ObjectId) {
+    return this.trackService.listen(id);
   }
 }
