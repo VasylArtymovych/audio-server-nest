@@ -15,5 +15,6 @@ import { TracksService } from './tracks.service';
   ],
   controllers: [TracksController],
   providers: [TracksService, FileService],
+  exports: [MongooseModule],
 })
 export class TracksModule {}

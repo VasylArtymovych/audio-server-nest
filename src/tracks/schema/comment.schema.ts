@@ -6,7 +6,7 @@ export type CommentDocument = HydratedDocument<Comment>;
 
 @Schema({ versionKey: false })
 export class Comment {
-  @Prop()
+  @Prop({ required: true })
   username: string;
 
   @Prop()

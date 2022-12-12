@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TracksModule } from './tracks/tracks.module';
 import config from './config/configuration';
 import { FileModule } from './file/file.module';
+import { AlbumModule } from './album/album.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { FileModule } from './file/file.module';
     MongooseModule.forRoot(config().database.host),
     TracksModule,
     FileModule,
+    AlbumModule,
   ],
   controllers: [],
   providers: [],
