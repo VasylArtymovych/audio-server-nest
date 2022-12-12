@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FileService, FileType } from 'src/file/file.service';
@@ -91,6 +96,9 @@ export class TracksService {
 
   async listen(id): Promise<{ listeners: number }> {
     const track = await this.trackModel.findById(id);
+    if (!track) {
+      throw new BadRequestException(`Track with ID: ${id} not found.`);
+    }
     track.listeners += 1;
     await track.save();
     return { listeners: track.listeners };

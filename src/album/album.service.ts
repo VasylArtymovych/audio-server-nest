@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { AddTrackDto } from './dto/add-track.dto';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { Album, AlbumDocument } from './schema/album.schema';
@@ -31,17 +31,19 @@ export class AlbumService {
   }
 
   async search(query: string): Promise<Album[]> {
-    console.log(query);
     const albums = await this.albumModel.find({
       name: { $regex: new RegExp(query, 'i') },
     });
     return albums;
   }
 
-  async addTrack(dto: AddTrackDto): Promise<{ message: string }> {
+  async addTrack(
+    trackId: ObjectId,
+    dto: AddTrackDto,
+  ): Promise<{ message: string }> {
     const album = await this.albumModel.findOneAndUpdate(
       { name: dto.albumName },
-      { $push: { tracks: dto.trackId } },
+      { $push: { tracks: trackId } },
     );
 
     if (!album) {
