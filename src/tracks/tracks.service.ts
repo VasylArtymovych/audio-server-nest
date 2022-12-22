@@ -40,7 +40,9 @@ export class TracksService {
   }
 
   async getOne(id): Promise<Track> {
-    const track = await this.trackModel.findById(id);
+    const track = await (
+      await this.trackModel.findById(id)
+    ).populate('comments');
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.BAD_REQUEST);
     }
