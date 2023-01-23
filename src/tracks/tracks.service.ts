@@ -84,7 +84,7 @@ export class TracksService {
   async delete(id) {
     const deletedTrack = await this.trackModel.findByIdAndDelete(id);
     await this.fileService.deleteFile(deletedTrack.picture, deletedTrack.audio);
-    return { message: 'success' };
+    return { message: 'success', id };
   }
 
   async addComment(dto): Promise<Comment> {

@@ -26,10 +26,10 @@ import { TracksService } from './tracks.service';
 export class TracksModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(isValidId).forRoutes(
-      {
-        path: 'tracks/:id',
-        method: RequestMethod.GET,
-      },
+      // {
+      //   path: 'tracks/:id',
+      //   method: RequestMethod.GET,
+      // },
       { path: 'tracks/:id', method: RequestMethod.PATCH },
       { path: 'tracks/:id', method: RequestMethod.DELETE },
       { path: 'tracks/listen/:id', method: RequestMethod.POST },

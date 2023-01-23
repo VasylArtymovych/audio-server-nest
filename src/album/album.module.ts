@@ -5,6 +5,7 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { FileService } from 'src/file/file.service';
 import { isValidId } from 'src/middleware/isValidId.middleware';
 import { TracksModule } from 'src/tracks/tracks.module';
 import { AlbumController } from './album.controller';
@@ -17,7 +18,7 @@ import { Album, AlbumSchema } from './schema/album.schema';
     TracksModule,
   ],
   controllers: [AlbumController],
-  providers: [AlbumService],
+  providers: [AlbumService, FileService],
 })
 export class AlbumModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

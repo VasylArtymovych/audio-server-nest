@@ -12,6 +12,9 @@ export class Album {
   @Prop({ required: true })
   artist: string;
 
+  @Prop({ required: true })
+  picture: string;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Track' }] })
   tracks: Track[];
 }
