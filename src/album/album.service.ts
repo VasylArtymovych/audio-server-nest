@@ -37,6 +37,11 @@ export class AlbumService {
     return albums;
   }
 
+  async getAlbumTracks(id): Promise<Album> {
+    const album = await this.albumModel.findById(id).populate('tracks');
+    return album;
+  }
+
   async search(query: string): Promise<Album[]> {
     const albums = await this.albumModel.find({
       name: { $regex: new RegExp(query, 'i') },
