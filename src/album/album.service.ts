@@ -54,7 +54,7 @@ export class AlbumService {
     dto: AddTrackDto,
   ): Promise<{ message: string }> {
     const album = await this.albumModel.findOneAndUpdate(
-      { name: dto.albumName },
+      { name: { $regex: new RegExp(dto.albumName, 'i') } },
       { $push: { tracks: trackId } },
     );
 
@@ -63,6 +63,6 @@ export class AlbumService {
         `Album with name: <${dto.albumName}>, not found.`,
       );
     }
-    return { message: 'Track added' };
+    return { message: `Track added to ${dto.albumName}` };
   }
 }
