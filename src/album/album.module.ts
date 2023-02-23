@@ -1,12 +1,12 @@
 import {
-  // MiddlewareConsumer,
+  MiddlewareConsumer,
   Module,
-  // NestModule,
-  // RequestMethod,
+  NestModule,
+  RequestMethod,
 } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FileService } from 'src/file/file.service';
-// import { isValidId } from 'src/middleware/isValidId.middleware';
+import { isValidId } from 'src/middleware/isValidId.middleware';
 import { TracksModule } from 'src/tracks/tracks.module';
 import { AlbumController } from './album.controller';
 import { AlbumService } from './album.service';
@@ -20,11 +20,10 @@ import { Album, AlbumSchema } from './schema/album.schema';
   controllers: [AlbumController],
   providers: [AlbumService, FileService],
 })
-export class AlbumModule {}
-// export class AlbumModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(isValidId)
-//       .forRoutes({ path: 'albums/add/:id', method: RequestMethod.PATCH });
-//   }
-// }
+export class AlbumModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(isValidId)
+      .forRoutes({ path: 'albums/add/:id', method: RequestMethod.PATCH });
+  }
+}
